@@ -1,25 +1,15 @@
 import { getProject, getProjectCategory } from '@/service/project';
 import { Space, Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
+import CategoryMenu from './components/CategoryMenu';
+import Detail from './components/Detail';
 import './index.less';
-
-interface ProjectCategory {
-  name: string;
-  id: number;
-}
-
-interface Project {
-  title: string;
-}
+import { Project } from './types/Project';
 
 export default function IndexPage() {
-  const [categoryList, setCategoryList] = useState([] as ProjectCategory[]);
   const [project, setProjectList] = useState([] as Project[]);
 
   useEffect(() => {
-    getProjectCategory().then(({ data }) => {
-      setCategoryList(data.data.list);
-    });
     getProject().then(({ data }) => {
       setProjectList(data.data.list);
     });
@@ -41,22 +31,20 @@ export default function IndexPage() {
       </div>
 
       <div className="container">
-        <div className="main">
-          <Tabs defaultActiveKey="1">
-            {categoryList.map((it, i) => (
-              <Tabs.TabPane tab={it.name} key={i} />
-            ))}
-          </Tabs>
-
-          <div className="project">
-            {project.map((it, i) => {
-              return (
-                <div>
-                  {i + 1}. {it.title}
-                </div>
-              );
-            })}
+        <CategoryMenu />
+        <div className="layout">
+          <div className="list">
+            <div className="project">
+              {project.map((it, i) => {
+                return (
+                  <div>
+                    {i + 1}. {it.title}
+                  </div>
+                );
+              })}
+            </div>
           </div>
+          <Detail />
         </div>
       </div>
     </div>

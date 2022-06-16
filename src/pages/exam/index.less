@@ -1,0 +1,61 @@
+body {
+  background-color: #f5f5f5;
+}
+
+.navbar {
+  position: fixed;
+  z-index: 101;
+  top: 0;
+  left: 0;
+  right: 0;
+  white-space: nowrap;
+  background: #fff;
+  box-shadow: 0 8px 24px -2px #f5f5f5f5;
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 56px;
+    margin: 0 auto;
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 60px;
+  height: calc(100vh - 56px);
+}
+
+.layout {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  .list {
+    width: 200px;
+    padding: 12px 12px;
+    background-color: #fff;
+  }
+  .detail {
+    flex: 1;
+  }
+}
+
+.category {
+  padding: 0 20px;
+  background-color: #fff;
+  .ant-tabs-nav {
+    margin-bottom: 0;
+  }
+}
+
+.detail {
+  flex: 1;
+  margin: 12px;
+}
+
+.card {
+  padding: 10px;
+  background-color: #fff;
+}
