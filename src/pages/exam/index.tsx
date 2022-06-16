@@ -16,7 +16,7 @@ export default function IndexPage() {
   }, []);
 
   return (
-    <div className="page-index">
+    <div className="page-exam">
       <div className="navbar">
         <div className="header">
           <Space style={{ display: 'flex' }}>
@@ -38,7 +38,11 @@ export default function IndexPage() {
               {project.map((it, i) => {
                 return (
                   <div>
-                    {i + 1}. {it.title}
+                    <span style={{
+                      display: 'inline-block',
+                      width: 20,
+                      textAlign: 'right'
+                    }}>{it.id}</span>. {it.title}
                   </div>
                 );
               })}
