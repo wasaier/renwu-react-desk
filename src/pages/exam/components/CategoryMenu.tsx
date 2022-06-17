@@ -1,7 +1,7 @@
-import { getProjectCategory } from '@/service/project';
-import { Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { Tabs } from 'antd';
 import { ProjectCategory } from '../types/ProjectCategory';
+import { getProjectCategory } from '@/service/project';
 
 const CategoryMenu = () => {
   const [categoryList, setCategoryList] = useState([] as ProjectCategory[]);

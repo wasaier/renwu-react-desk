@@ -1,16 +1,20 @@
 import { getProjectDetail } from '@/service/project';
 import { Space } from 'antd';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Project } from '../types/Project';
+import FComment from './FComment/index';
 
-const Detail = () => {
+const Detail: FC<{
+  projectId: number;
+}> = ({ projectId }) => {
   const [detail, setDetail] = useState({} as Project);
 
   useEffect(() => {
-    getProjectDetail({ projectId: 1 }).then(res=> {
+    getProjectDetail({ projectId }).then(res=> {
       setDetail(res.data.data)
     })
-  }, [])
+  }, [projectId])
+
   return (
     <div className="detail">
       <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
@@ -18,7 +22,7 @@ const Detail = () => {
           <div>{detail.title}</div>
           <div>{detail.description}</div>
         </div>
-        <div className="card" style={{ height: 300 }}></div>
+        <FComment />
       </Space>
     </div>
   );

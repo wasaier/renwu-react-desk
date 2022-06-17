@@ -1,6 +1,8 @@
 import { getProject, getProjectCategory } from '@/service/project';
+import { PageLoading } from '@ant-design/pro-layout';
 import { Space, Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { Link, useHistory, useLocation } from 'umi';
 import CategoryMenu from './components/CategoryMenu';
 import Detail from './components/Detail';
 import './index.less';
@@ -8,12 +10,18 @@ import { Project } from './types/Project';
 
 export default function IndexPage() {
   const [project, setProjectList] = useState([] as Project[]);
+  const location: any = useLocation()
+  const queryProjectId = location.query.qid;
 
   useEffect(() => {
     getProject().then(({ data }) => {
       setProjectList(data.data.list);
     });
   }, []);
+
+  if (!project.length) {
+    return <PageLoading />
+  }
 
   return (
     <div className="page-exam">
@@ -37,18 +45,16 @@ export default function IndexPage() {
             <div className="project">
               {project.map((it, i) => {
                 return (
-                  <div>
-                    <span style={{
-                      display: 'inline-block',
-                      width: 20,
-                      textAlign: 'right'
-                    }}>{it.id}</span>. {it.title}
+                  <div className='item'>
+                    <Link to={`/exam?qid=${it.id}`}>
+                      {it.id > 9 ? it.id : `0${it.id}`}. {it.title}
+                    </Link>
                   </div>
                 );
               })}
             </div>
           </div>
-          <Detail />
+          <Detail projectId={queryProjectId ? queryProjectId : project?.[0]?.id} />
         </div>
       </div>
     </div>
