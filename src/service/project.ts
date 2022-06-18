@@ -1,9 +1,12 @@
 import axios from "axios"
 
-export const getProject = () => {
+export const getProject = (params: {
+  categoryId?: string;
+}) => {
   return axios({
     method: 'POST',
-    url: 'http://localhost:3000/project/list'
+    url: 'http://localhost:3000/project/list',
+    data: params
   })
 }
 

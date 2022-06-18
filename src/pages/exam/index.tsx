@@ -1,27 +1,89 @@
-import { getProject, getProjectCategory } from '@/service/project';
 import { PageLoading } from '@ant-design/pro-layout';
-import { Space, Tabs } from 'antd';
+import { Empty, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory, useLocation } from 'umi';
-import CategoryMenu from './components/CategoryMenu';
-import Detail from './components/Detail';
-import './index.less';
+import { connect, ExamModelState, Link, useDispatch, useLocation } from 'umi';
+import Detail from './components/FDetail';
+import CategoryMenu from './components/FCategoryMenu';
 import { Project } from './types/Project';
+import { ProjectCategory } from './types/ProjectCategory';
+import './index.less';
 
-export default function IndexPage() {
-  const [project, setProjectList] = useState([] as Project[]);
-  const location: any = useLocation()
+const ExamPage: React.FC<ExamModelState> = ({
+  categoryList,
+  projectList,
+  project,
+}) => {
+  const location: any = useLocation();
+  const dispatch = useDispatch();
   const queryProjectId = location.query.qid;
+  const queryCategoryId = location.query.cid;
 
   useEffect(() => {
-    getProject().then(({ data }) => {
-      setProjectList(data.data.list);
-    });
+    if (!categoryList.length) {
+      dispatch({
+        type: 'exam/queryCategory',
+      });
+    }
   }, []);
 
-  if (!project.length) {
-    return <PageLoading />
-  }
+  useEffect(() => {
+    if (categoryList.length) {
+      dispatch({
+        type: 'exam/queryProject',
+        payload: {
+          categoryId: queryCategoryId ? queryCategoryId : categoryList[0].id,
+        },
+      });
+    }
+  }, [categoryList, queryCategoryId]);
+
+  useEffect(() => {
+    if (queryProjectId) {
+      dispatch({
+        type: 'exam/queryDetail',
+        payload: {
+          projectId: queryProjectId,
+        },
+      });
+    }
+  }, [queryProjectId]);
+
+  const renderMain = () => {
+    if (!project) {
+      return (
+        <div
+          style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            background: '#fff',
+            justifyContent: 'center'
+          }}
+        >
+          <Empty />
+        </div>
+      );
+    }
+
+    return (
+      <div className="layout">
+        <div className="list">
+          <div className="project">
+            {projectList.map((it, i) => {
+              return (
+                <div className="item">
+                  <Link to={`/exam?qid=${it.id}`}>
+                    {it.id > 9 ? it.id : `0${it.id}`}. {it.title}
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <Detail project={project} />
+      </div>
+    );
+  };
 
   return (
     <div className="page-exam">
@@ -39,24 +101,15 @@ export default function IndexPage() {
       </div>
 
       <div className="container">
-        <CategoryMenu />
-        <div className="layout">
-          <div className="list">
-            <div className="project">
-              {project.map((it, i) => {
-                return (
-                  <div className='item'>
-                    <Link to={`/exam?qid=${it.id}`}>
-                      {it.id > 9 ? it.id : `0${it.id}`}. {it.title}
-                    </Link>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          <Detail projectId={queryProjectId ? queryProjectId : project?.[0]?.id} />
-        </div>
+        <CategoryMenu categoryList={categoryList} />
+        {renderMain()}
       </div>
     </div>
   );
-}
+};
+
+export default connect((model: any) => {
+  return {
+    ...model.exam,
+  };
+})(ExamPage);
